@@ -12,6 +12,16 @@ class BaseSprite:
     def draw(self, window):
         window.blit(self.texture, self.hitbox)
 
+class Gold:
+    def __init__(self, x, y, texture, w, h):
+        self.texture = pygame.image.load(texture)
+        self.texture = pygame.transform.scale(self.texture, [w, h])
+        self.hitbox = self.texture.get_rect()
+        self.hitbox.x = x
+        self.hitbox.y = y
+
+    def draw(self, window):
+        window.blit(self.texture, self.hitbox)
 
 
 class Hero(BaseSprite):
@@ -25,6 +35,26 @@ class Hero(BaseSprite):
             self.hitbox.y -= self.speed
         if keys[pygame.K_s]:
             self.hitbox.y += self.speed
+
+class Enemy(BaseSprite):
+    def __init__(self, x1, y1, texture, speed, w, h, x2, y2):
+        super().__init__(x1, y1, texture, speed, w, h)
+        self.direction = "forword"
+        self.x1 = x1
+        self.x2 = x2
+        self.y2 = y2
+
+    def update(self):
+        if self.direction == "forword":
+            self.hitbox.x += self.speed
+            if self.hitbox.x > self.x2:
+                self.direction = "back"
+
+        else:
+            self.hitbox.x -= self.speed
+            if self.hitbox.x < self.x1:
+                self.direction = "forword"
+
 
 class Wall:
     def __init__(self, x, y, color, w, h):
@@ -41,13 +71,16 @@ pygame.init()
 window = pygame.display.set_mode([700, 500])
 clock = pygame.time.Clock()
 
-background_img = pygame.image.load("background2.png.")
+background_img = pygame.image.load("background.jpg")
 background_img = pygame.transform.scale(background_img, [700, 500])
-hero = Hero(250, 250, "hero.png", 2, 50, 50)
+hero = Hero(90, 295, "hero.png", 2, 60, 60)
+gold = Gold(535, 330, "treasure.png", 60, 60)
+enemy = Enemy(475, 274, "cyborg.png", 2, 60, 60, 570, 272)
 
 walls = [
     Wall(160, 187, [250, 0, 0], 20, 100),
-    Wall(160, 372, [250, 0, 0], 100, 20)
+    Wall(165, 358, [250, 0, 0], 100, 20),
+    Wall(265, 178, [250, 0, 0], 20, 200)
 ]
 
 
@@ -61,10 +94,25 @@ while game:
             print(pygame.mouse.get_pos())
 
     hero.update()
+    enemy.update()
+    for wall in walls:
+        if hero.hitbox.colliderect(wall.hitbox):
+            hero.hitbox.x = 90
+            hero.hitbox.y = 295
+
+    for wall in walls:
+        if hero.hitbox.colliderect(enemy.hitbox):
+            hero.hitbox.x = 90
+            hero.hitbox.y = 295
+
+
+
 
     window.fill([104, 1, 14])
     window.blit(background_img, [0, 0])
     hero.draw(window)
+    gold.draw(window)
+    enemy.draw(window)
     for wall in walls:
         wall.draw(window)
     pygame.display.flip()
