@@ -73,16 +73,18 @@ clock = pygame.time.Clock()
 
 background_img = pygame.image.load("background.jpg")
 background_img = pygame.transform.scale(background_img, [700, 500])
-hero = Hero(90, 295, "hero.png", 2, 60, 60)
+hero = Hero(50, 295, "hero.png", 2, 60, 60)
 gold = Gold(535, 330, "treasure.png", 60, 60)
 enemy = Enemy(475, 274, "cyborg.png", 2, 60, 60, 570, 272)
 
 walls = [
-    Wall(160, 187, [250, 0, 0], 20, 100),
-    Wall(165, 358, [250, 0, 0], 100, 20),
-    Wall(265, 178, [250, 0, 0], 20, 200)
+    Wall(130, 187, [250, 0, 0], 20, 100),
+    Wall(135, 358, [250, 0, 0], 250, 20),
+    Wall(235, 178, [250, 0, 0], 20, 200),
+    Wall(130, 88, [250, 0, 0], 20, 100),
+    Wall(150, 87, [250, 0, 0], 200, 20),
+    Wall(350, 87, [250, 0, 0], 20, 200)
 ]
-
 
 game = True
 while game:
